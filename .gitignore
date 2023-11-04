@@ -2,3 +2,5 @@
 notebooks/.ipynb_checkpoints
 notebooks/processed.csv
 notebooks/filtered.tsv
+notebooks/T5-Small-finetuned-detoxification/
+notebooks/T5Small-detoxification/
