@@ -1,2 +1,4 @@
 
 notebooks/.ipynb_checkpoints
+notebooks/processed.csv
+notebooks/filtered.tsv
