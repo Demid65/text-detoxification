@@ -5,18 +5,17 @@ from datasets import Dataset
 import numpy as np
 import os
 import warnings
+import argparse
 
 warnings.filterwarnings("ignore")
 
 TRAINING_DATA_FOLDER = 'data/training/'
 TRAINING_FOLDER = 'training/'
-MODELS_FOLDER = 'models/'
 
 PREFIX = 'detoxify text: '
 
 INPUT_MODEL = 't5-small'
-OUTPUT_MODEL = 't5-small-detoxification'
-OUTPUT_PATH = os.path.join(MODELS_FOLDER, OUTPUT_MODEL)
+OUTPUT_PATH = 'models/t5-small-detoxification'
 
 TEMP_STAGE_LIMIT = 3
 
@@ -26,8 +25,62 @@ TRAIN_LR = 2e-5
 PRETRAIN_EPOCH = 4
 TRAIN_EPOCH = 3
 
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 FP16 = True
+
+# parse the command line arguments
+parser = argparse.ArgumentParser(
+                    prog='python .\src\models\\train_model.py',
+                    description='runs the training of the detoxification model.',
+                    epilog='https://github.com/Demid65/text-detoxification')
+                    
+parser.add_argument('--dataset_path', type=str, metavar='TRAINING_DATA_FOLDER', dest='TRAINING_DATA_FOLDER',
+                    help=f'Folder where split dataset is stored. Defaults to {TRAINING_DATA_FOLDER}', default=TRAINING_DATA_FOLDER)
+
+parser.add_argument('--training_folder', type=str, metavar='TRAINING_FOLDER', dest='TRAINING_FOLDER',
+                    help=f'Folder where intermediate training data is stored. Defaults to {TRAINING_FOLDER}', default=TRAINING_FOLDER)
+
+parser.add_argument('--prefix', type=str, metavar='PREFIX', dest='PREFIX',
+                    help=f'Prefix that is added to every model input. Defaults to "{PREFIX}"', default=PREFIX)
+
+parser.add_argument('--model', type=str, metavar='INPUT_MODEL', dest='INPUT_MODEL',
+                    help=f'Path to the pretrained model, should be a T5 model. Could be a hugging face model identifier. Defaults to {INPUT_MODEL}', default=INPUT_MODEL) 
+
+parser.add_argument('--save_to', type=str, metavar='OUTPUT_PATH', dest='OUTPUT_PATH',
+                    help=f'Place to save the resulting model into. Defaults to {OUTPUT_PATH}', default=OUTPUT_PATH)                            
+
+parser.add_argument('--pretrain_lr', type=float, metavar='PRETRAIN_LR', dest='PRETRAIN_LR',
+                    help=f'Learning rate for the pretraining stage. Defaults to {PRETRAIN_LR}', default=PRETRAIN_LR)  
+
+parser.add_argument('--train_lr', type=float, metavar='TRAIN_LR', dest='TRAIN_LR',
+                    help=f'Learning rate for the main training stage. Defaults to {TRAIN_LR}', default=TRAIN_LR)
+                
+parser.add_argument('--pretrain_epoch', type=int, metavar='PRETRAIN_EPOCH', dest='PRETRAIN_EPOCH',
+                    help=f'Number of epochs for the pretraining stage. Defaults to {PRETRAIN_EPOCH}', default=PRETRAIN_EPOCH)
+
+parser.add_argument('--train_epoch', type=int, metavar='TRAIN_EPOCH', dest='TRAIN_EPOCH',
+                    help=f'Number of epochs for the main training stage. Defaults to {TRAIN_EPOCH}', default=TRAIN_EPOCH)
+
+parser.add_argument('--batch_size', type=int, metavar='BATCH_SIZE', dest='BATCH_SIZE',
+                    help=f'Batch size for training process. Defaults to {BATCH_SIZE}', default=BATCH_SIZE)
+
+parser.add_argument('--no_fp16', dest='FP16', action='store_const', const=False, default=True,
+                    help=f'Set this flag to disable FP16 precision. Set if CUDA is not available')
+
+args = parser.parse_args()
+
+TRAINING_DATA_FOLDER = args.TRAINING_DATA_FOLDER
+TRAINING_FOLDER = args.TRAINING_FOLDER
+PREFIX = args.PREFIX
+INPUT_MODEL = args.INPUT_MODEL
+OUTPUT_PATH = args.OUTPUT_PATH
+
+PRETRAIN_LR = args.PRETRAIN_LR 
+TRAIN_LR = args.TRAIN_LR
+PRETRAIN_EPOCH = args.PRETRAIN_EPOCH
+TRAIN_EPOCH = args.TRAIN_EPOCH
+BATCH_SIZE = args.BATCH_SIZE
+FP16 = args.FP16
 
 # load split datasets
 print(f'loading datasets from {TRAINING_DATA_FOLDER}')
@@ -164,6 +217,6 @@ trainer.train()
 
 # save the model
 print(f'saving model to {OUTPUT_PATH}')
-trainer.save_model(os.path.join(MODELS_FOLDER, OUTPUT_MODEL))
+trainer.save_model(OUTPUT_PATH)
 
 print('done')

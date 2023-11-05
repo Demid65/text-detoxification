@@ -5,16 +5,37 @@ import pandas as pd
 import os
 from tqdm import tqdm
 import warnings
+import argparse
 
 warnings.filterwarnings("ignore")
 
 DATASET_LINK = 'https://github.com/skoltech-nlp/detox/releases/download/emnlp2021/filtered_paranmt.zip'
 EXTRACT_FOLDER = 'data/raw/'
 DATASET_FILENAME = 'filtered.tsv'
+INTERIM_PATH = 'data/interim/processed.csv'
+
+# parse the command line arguments
+parser = argparse.ArgumentParser(
+                    prog='python .\src\data\download_dataset.py',
+                    description='downloads the dataset for text detoxification, preprocesses it and saves into the intermediate folder.',
+                    epilog='https://github.com/Demid65/text-detoxification')
+                    
+parser.add_argument('--link', type=str, metavar='DATASET_LINK', dest='DATASET_LINK',
+                    help=f'Link to the dataset. Defaults to {DATASET_LINK}', default=DATASET_LINK)
+
+parser.add_argument('--extract_to', type=str, metavar='EXTRACT_FOLDER', dest='EXTRACT_FOLDER',
+                    help=f'Folder where dataset is extracted to. Defaults to {EXTRACT_FOLDER}', default=EXTRACT_FOLDER)
+                            
+parser.add_argument('--save_to', type=str, metavar='OUTPUT_FILE', dest='INTERIM_PATH',
+                    help=f'Path where processed dataset is saved. Defaults to {INTERIM_PATH}', default=INTERIM_PATH) 
+
+args = parser.parse_args()
+
+DATASET_LINK = args.DATASET_LINK
+EXTRACT_FOLDER = args.EXTRACT_FOLDER
+INTERIM_PATH = args.INTERIM_PATH
 DATASET_PATH = os.path.join(EXTRACT_FOLDER, DATASET_FILENAME)
-INTERIM_FOLDER = 'data/interim/'
-INTERIM_FILENAME = 'processed.csv'
-INTERIM_PATH = os.path.join(INTERIM_FOLDER, INTERIM_FILENAME)
+
 
 # Download and unzip the dataset
 def download_and_unzip(url, extract_to='.'): # https://gist.github.com/hantoine/c4fc70b32c2d163f604a8dc2a050d5f6
