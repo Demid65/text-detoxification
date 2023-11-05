@@ -4,3 +4,10 @@ notebooks/processed.csv
 notebooks/filtered.tsv
 notebooks/T5-Small-finetuned-detoxification/
 notebooks/T5Small-detoxification/
+data/raw/filtered.tsv
+data/interim/processed.csv
+data/training/pretrain/
+data/training/pretrain_val/
+data/training/train/
+data/training/train_val/
+data/training/test/
