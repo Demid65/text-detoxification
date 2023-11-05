@@ -42,4 +42,18 @@ I decided to use [T5-Small model](https://huggingface.co/t5-small) at this stage
 
 # Hypothesis 4: More finetuning
 
-A single epoch of finetuning achieved certain results, which could likely be improved by running few extra epochs of training.
+A single epoch of finetuning achieved certain results, which could likely be improved by running more epochs of training.
+
+A few extra epochs were attempted, but little improvement was achieved. Seems like that we need to change the model itself or make further tweaks to the training parameters.
+
+# Hypothesis 5: Using a prefix
+
+The original model relied on prefixes to distinguish the kind of operation it is expected to perform. Maybe it would help to add a prefix to the operation we're doing. I decided to use "**detoxify text:** " as the prefix, and to speed up the testing of that idea, I reduced the size of training batch significantly.
+
+Testing succeeded. With increased learning rate and added prefix, the model has begun to learn much faster and got some better results. The model from previous Notebook 1 was reused in that test, and code that was used to generate that version of the model is available in the [Notebook 2](../notebooks/2%20-%20More_finetuning.ipynb).
+
+# Hypothesis 6: Multi-stage training
+
+Before spending a lot of time training the model on the full dataset, we could first train it on the portion of the small portion of the dataset, with high learning rate, so the model could learn core features of the dataset quickly, and then improve on them.
+
+This possibility is explored in [Notebook 3](../notebooks/3%20-%20Multi-stage%20training.ipynb) and is going to be used in the final training algorithm.
