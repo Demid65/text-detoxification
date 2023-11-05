@@ -27,7 +27,7 @@ df = df[['toxic','detoxified']].rename(columns={'toxic':'input','detoxified':'ta
 temp, pretrain = train_test_split(df, test_size=NUM_PRETRAIN / len(df), random_state=42)
 temp, pretrain_val = train_test_split(temp, test_size=NUM_PRETRAIN_VAL / len(temp), random_state=42)
 temp, train = train_test_split(temp, test_size=NUM_TRAIN / len(temp), random_state=42)
-test, train_val = train_test_split(train, test_size=NUM_TRAIN_VAL / len(temp), random_state=42)
+test, train_val = train_test_split(temp, test_size=NUM_TRAIN_VAL / len(temp), random_state=42)
 
 # convert datasets into huggingface format
 pretrain_dataset = Dataset.from_dict(pretrain.to_dict(orient='list'))
